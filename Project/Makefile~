@@ -4,7 +4,7 @@ main: Image.o main.cpp
 	g++ -o puzzlesolver main.cpp Image.o -lsfml-graphics -lsfml-window -lsfml-system
 
 Image.o: Image.h Image.cpp 
-	g++ -c Image.cpp -o Image.o 
+	g++ -c Image.o Image.cpp
 
 clean:
 	rm *.o puzzlesolver
