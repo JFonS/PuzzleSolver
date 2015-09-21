@@ -20,9 +20,13 @@ int main(int argc, char* argv[])
 
     Image *originalImage = new Image(inputFilename, windowWidth, windowHeight);
     Image *image = new Image(inputFilename, windowWidth, windowHeight);
+    cout << "prediscard" << endl;
     image->DiscardBackground();
+    cout << "preget" << endl;
     image->GetPieces();
+    cout << "prerefine" << endl;
     image->RefinePieces();
+    cout << "done" << endl;
 
     while (window.isOpen())
     {

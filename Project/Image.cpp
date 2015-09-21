@@ -5,8 +5,8 @@ unsigned char Image::DiscardAlpha = 0;
 Image::Image(string filename, int windowWidth, int windowHeight)
 {
 
-   // BackgroundOriginalColor = sf::Color(160, 160, 160);
-    BackgroundOriginalColor = sf::Color(90, 180, 100);
+    BackgroundOriginalColor = sf::Color(160, 160, 160);
+    //BackgroundOriginalColor = sf::Color(90, 180, 100);
 
     BackgroundColorThreshold = 0.3f;
     DiscardAlpha = 0;
@@ -172,6 +172,10 @@ void Image::GetPieces()
                     cout << "found piece " << pieceSize << endl;
                     cout << minX << ", " << minY << "     " << maxX << ", " << maxY << endl;
                 #endif
+            }
+            else
+            {
+
             }
             //
         }

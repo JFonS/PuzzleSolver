@@ -53,7 +53,7 @@ void Piece::Refine(sf::Image *inputImage)
                 visited[current.x - bounds.left][current.y - bounds.top] = true;
 
                 sf::Color currentColor = inputImage->getPixel(current.x, current.y);
-                if( !Image::EqualColors(currentColor, backgroundMeanColor, RefinedBackgroundThreshold) )
+                if( Image::EqualColors(currentColor, backgroundMeanColor, RefinedBackgroundThreshold) )
                 {
                     sf::Vector2i adj = sf::Vector2i(current.x-1, current.y);
                     if(IsInsideBounds(adj) && !visited[adj.x - bounds.left][adj.y - bounds.top])
