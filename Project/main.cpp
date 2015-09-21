@@ -11,6 +11,7 @@ int windowWidth = 1800, windowHeight = 900;
 
 int main(int argc, char* argv[])
 {
+
     srand(time(0));
     if (argc < 2) { cerr << "Missing input file." << endl; exit(-1); }
 
@@ -21,6 +22,7 @@ int main(int argc, char* argv[])
     Image *image = new Image(inputFilename, windowWidth, windowHeight);
     image->DiscardBackground();
     image->GetPieces();
+    image->RefinePieces();
 
     while (window.isOpen())
     {
@@ -39,7 +41,7 @@ int main(int argc, char* argv[])
         sf::Sprite *originalSprite = originalImage->GetSprite();
         originalSprite->setScale(float(windowWidth) / (originalImage->GetWidth() * 2), float(windowHeight) / originalImage->GetHeight());
         originalSprite->setPosition(windowWidth/2, 0);
-       // window.draw(*originalSprite);
+        window.draw(*originalSprite);
 
         window.display();
     }

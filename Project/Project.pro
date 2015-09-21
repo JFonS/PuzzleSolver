@@ -4,8 +4,10 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
-    Image.cpp
+    Image.cpp \
+    Piece.cpp
 
 HEADERS += \
-    Image.h
+    Image.h \
+    Piece.h
 

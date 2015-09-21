@@ -6,6 +6,7 @@
 #include <queue>
 #include <math.h>
 #include <SFML/Graphics.hpp>
+#include "Piece.h"
 
 using namespace std;
 
@@ -15,27 +16,31 @@ private:
 
     float BackgroundColorThreshold;
     sf::Color BackgroundOriginalColor, BorderColor;
-    unsigned char DiscardAlpha; //The alpha of a pixel whichs been discarded
+    static unsigned char DiscardAlpha; //The alpha of a pixel whichs been discarded
 
     sf::Image image;
     sf::Texture texture;
     sf::Sprite sprite;
 
+    vector<Piece*> pieces;
+
     int imageWidth, imageHeight;
 
-    bool isBorderPixel(int x, int y);
+    bool IsBorderPixel(int x, int y);
 
 public:
+
 
     Image(string filename, int windowWidth, int windowHeight);
 
     void DiscardBackground();
     void GetPieces();
+    void RefinePieces();
 
     //Utils
-    bool IsDiscarded(const sf::Color &color) { return color.a == DiscardAlpha; }
+    static bool IsDiscarded(const sf::Color &color) { return color.a == DiscardAlpha; }
     bool IsInsideImage(const sf::Vector2i &pos) { return pos.x >= 0 && pos.x < imageWidth && pos.y >= 0 && pos.y < imageHeight; }
-    bool EqualColors(const sf::Color &color1, const sf::Color &color2, float threshold)
+    static bool EqualColors(const sf::Color &color1, const sf::Color &color2, float threshold)
     {
         float maxDistance = threshold * 255.0f;
         return abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b) < maxDistance;
