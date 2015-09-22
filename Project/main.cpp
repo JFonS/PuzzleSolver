@@ -20,13 +20,10 @@ int main(int argc, char* argv[])
 
     Image *originalImage = new Image(inputFilename, windowWidth, windowHeight);
     Image *image = new Image(inputFilename, windowWidth, windowHeight);
-    cout << "prediscard" << endl;
     image->DiscardBackground();
-    cout << "preget" << endl;
-    image->GetPieces();
-    cout << "prerefine" << endl;
+    image->GetPiecesBounds();
+
     image->RefinePieces();
-    cout << "done" << endl;
 
     while (window.isOpen())
     {
@@ -39,13 +36,14 @@ int main(int argc, char* argv[])
         window.clear();
 
         sf::Sprite *sprite = image->GetSprite();
-        sprite->setScale(float(windowWidth) / (image->GetWidth() * 2), float(windowHeight) / image->GetHeight());
+        //sprite->setScale(float(windowWidth) / (image->GetWidth()), float(windowWidth) / (image->GetWidth()));
+        //sprite->setScale(float(windowWidth) / (image->GetWidth() * 2), float(windowHeight) / image->GetHeight());
         window.draw(*sprite);
 
-        sf::Sprite *originalSprite = originalImage->GetSprite();
+        /*sf::Sprite *originalSprite = originalImage->GetSprite();
         originalSprite->setScale(float(windowWidth) / (originalImage->GetWidth() * 2), float(windowHeight) / originalImage->GetHeight());
         originalSprite->setPosition(windowWidth/2, 0);
-        window.draw(*originalSprite);
+        window.draw(*originalSprite);*/
 
         window.display();
     }

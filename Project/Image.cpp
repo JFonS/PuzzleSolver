@@ -5,8 +5,8 @@ unsigned char Image::DiscardAlpha = 0;
 Image::Image(string filename, int windowWidth, int windowHeight)
 {
 
-    BackgroundOriginalColor = sf::Color(160, 160, 160);
-    //BackgroundOriginalColor = sf::Color(90, 180, 100);
+   // BackgroundOriginalColor = sf::Color(160, 160, 160);
+    BackgroundOriginalColor = sf::Color(90, 180, 100);
 
     BackgroundColorThreshold = 0.3f;
     DiscardAlpha = 0;
@@ -43,6 +43,8 @@ void Image::DiscardBackground()
         sf::Color currentColor = image.getPixel(current.x, current.y);
         if(EqualColors(currentColor, BackgroundOriginalColor, BackgroundColorThreshold) )
         {
+
+
             sf::Vector2i adj = sf::Vector2i(current.x-1, current.y);
             if(IsInsideImage(adj) && !visited[adj.x][adj.y])
             {
@@ -78,7 +80,7 @@ void Image::DiscardBackground()
 }
 
 
-void Image::GetPieces()
+void Image::GetPiecesBounds()
 {
     //#define DEBUG_PIECES
 
@@ -186,7 +188,7 @@ void Image::RefinePieces()
 {
     for(Piece *piece : pieces)
     {
-        piece->Refine(&(this->image));
+        piece->RefinePiece(&(this->image));
     }
 }
 

@@ -22,11 +22,14 @@ class Piece
 private:
 
     static float RefinedBackgroundThreshold;
+    static unsigned char RefinedBackgroundDiscardAlpha;
 
     vector<Coord> refinedPixelsCoords;
 
     sf::IntRect bounds; //Bounding box of the piece
     int size; //The number of pixels of the piece
+
+    void RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePointer);
 
 public:
 
@@ -34,7 +37,7 @@ public:
 
     Piece();
 
-    void Refine(sf::Image *inputImage);
+    void RefinePiece(sf::Image *inputImage);
 
     void SetBounds(sf::Image *inputImage, const sf::IntRect &bounds)
     {
@@ -43,8 +46,8 @@ public:
         this->bounds.left = max(0, bounds.left - boundExtension);
         this->bounds.top  = max(0, bounds.top - boundExtension);
 
-        this->bounds.width = bounds.width + boundExtension;
-        this->bounds.height = bounds.height + boundExtension;
+        this->bounds.width = min(int(inputImage->getSize().x), bounds.left + bounds.width + boundExtension*2) - this->bounds.left;
+        this->bounds.height = min(int(inputImage->getSize().y), bounds.top + bounds.height + boundExtension*2) - this->bounds.top;
 
         cout << this->bounds.left << ", " << this->bounds.top << ", " << this->bounds.width << ", " << this->bounds.height << endl;
     }

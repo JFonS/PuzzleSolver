@@ -34,7 +34,8 @@ public:
     Image(string filename, int windowWidth, int windowHeight);
 
     void DiscardBackground();
-    void GetPieces();
+    void GetPiecesBounds();
+
     void RefinePieces();
 
     //Utils
