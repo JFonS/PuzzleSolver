@@ -41,7 +41,7 @@ public:
 
     void SetBounds(sf::Image *inputImage, const sf::IntRect &bounds)
     {
-        int boundExtension = 50;
+        int boundExtension = 45;
 
         this->bounds.left = max(0, bounds.left - boundExtension);
         this->bounds.top  = max(0, bounds.top - boundExtension);
