@@ -20,7 +20,7 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
 
     //Get the background color
     int numPixelsInPiece = 0;
-    sf::Vector3f backgroundMeanColorV(.0f, .0f, .0f);
+    sf::Vector3f refinedBackgroundColorV(.0f, .0f, .0f);
 
     for(int x = bounds.left; x < bounds.left + bounds.width; ++x)
     {
@@ -30,14 +30,14 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
             if( Image::IsDiscarded(pixelColor) )
             {
                 ++numPixelsInPiece;
-                backgroundMeanColorV += sf::Vector3f(pixelColor.r, pixelColor.g, pixelColor.b);
+                refinedBackgroundColorV += sf::Vector3f(pixelColor.r, pixelColor.g, pixelColor.b);
             }
         }
     }
-    backgroundMeanColorV /= float(numPixelsInPiece);
+    refinedBackgroundColorV /= float(numPixelsInPiece);
     //
 
-    sf::Color backgroundMeanColor = sf::Color(backgroundMeanColorV.x, backgroundMeanColorV.y, backgroundMeanColorV.z);
+    refinedBackgroundColor = sf::Color(refinedBackgroundColorV.x, refinedBackgroundColorV.y, refinedBackgroundColorV.z);
 
     //BFS to discard background's pixels
     bool visited[bounds.width][bounds.height];
@@ -50,7 +50,7 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
             if(visited[x - bounds.left][y - bounds.top]) continue;
 
             sf::Color currentColor = maskedImage->getPixel(x - bounds.left, y - bounds.top);
-            if(!Image::EqualColors(backgroundMeanColor, currentColor, RefinedBackgroundThreshold)) continue;
+            if(!Image::EqualColors(refinedBackgroundColor, currentColor, RefinedBackgroundThreshold)) continue;
 
             queue<sf::Vector2i> toVisit;
             toVisit.push(sf::Vector2i(x, y));
@@ -60,7 +60,7 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
                 visited[current.x - bounds.left][current.y - bounds.top] = true;
 
                 currentColor = maskedImage->getPixel(current.x - bounds.left, current.y - bounds.top);
-                if( Image::EqualColors(currentColor, backgroundMeanColor, RefinedBackgroundThreshold) )
+                if( Image::EqualColors(currentColor, refinedBackgroundColor, RefinedBackgroundThreshold) )
                 {
                     sf::Vector2i adj = sf::Vector2i(current.x-1, current.y);
                     if(IsInsideBounds(adj) && !visited[adj.x - bounds.left][adj.y - bounds.top])
@@ -100,8 +100,6 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
     }
 }
 
-
-
 void Piece::RefinePiece(sf::Image *inputImage) //RefinedBackgroundDiscardAlpha
 {
     sf::Image *maskedImage;
@@ -109,7 +107,6 @@ void Piece::RefinePiece(sf::Image *inputImage) //RefinedBackgroundDiscardAlpha
 
     //BFS to get piece's pixels
     vector<Coord> connectedComponent;
-    vector<Coord> componentBorder;
 
     bool visited[bounds.width][bounds.height];
     for(int x = 0; x < bounds.width; ++x) for(int y = 0; y < bounds.height; ++y) visited[x][y] = false;
@@ -184,9 +181,10 @@ void Piece::RefinePiece(sf::Image *inputImage) //RefinedBackgroundDiscardAlpha
                 }
             }
 
-            if(ccCoords.size() > connectedComponent.size()) {
+            if(ccCoords.size() > connectedComponent.size())
+            {
                 connectedComponent = ccCoords;
-                componentBorder = ccBorder;
+                refinedBorderPixels = ccBorder;
             }
         }
     }
@@ -198,12 +196,70 @@ void Piece::RefinePiece(sf::Image *inputImage) //RefinedBackgroundDiscardAlpha
         inputImage->setPixel(coord.x, coord.y, randomPieceColor);
     }
 
-    for(int i = 0; i < componentBorder.size(); ++i)
+    for(int i = 0; i < refinedBorderPixels.size(); ++i)
     {
-        Coord coord = componentBorder[i];
+        Coord coord = refinedBorderPixels[i];
         inputImage->setPixel(coord.x, coord.y, sf::Color(255,0,255,255));
     }
 
+    //CORNERS STUFF
+    GetPieceCorners(inputImage);
+    DrawCorners(inputImage);
 
     delete maskedImage;
+}
+
+void Piece::GetPieceCorners(sf::Image *inputImage)
+{
+    for(int i = 0; i < refinedBorderPixels.size(); ++i)
+    {
+        Coord coord = refinedBorderPixels[i];
+        if(IsCorner(inputImage, coord))
+        {
+            cornerPixelCoords.push_back(coord);
+        }
+    }
+}
+
+bool Piece::IsCorner(sf::Image *inputImage, Coord pixelCoord)
+{
+    float AcceptanceBackgroundPixelsPercent = 0.6f;
+    int radius = 20;
+    int totalPixels = 0, bgPixelCount = 0;
+    for(int x = pixelCoord.x - radius; x <= pixelCoord.x + radius; ++x)
+    {
+        for(int y = pixelCoord.y - radius; y <= pixelCoord.y + radius; ++y)
+        {
+            if(IsInsideBounds(sf::Vector2i(x,y)))
+            {
+                ++totalPixels;
+                sf::Color color = inputImage->getPixel(x, y);
+                if(Image::EqualColors(color, refinedBackgroundColor, RefinedBackgroundThreshold))
+                {
+                    ++bgPixelCount;
+                }
+            }
+        }
+    }
+
+    return bgPixelCount >= totalPixels * AcceptanceBackgroundPixelsPercent;
+}
+
+void Piece::DrawCorners(sf::Image *inputImage)
+{
+    int pointRadius = 1;
+    for(int i = 0; i < cornerPixelCoords.size(); ++i)
+    {
+        Coord pixelCoord = cornerPixelCoords[i];
+        for(int x = pixelCoord.x - pointRadius; x <= pixelCoord.x + pointRadius; ++x)
+        {
+            for(int y = pixelCoord.y - pointRadius; y <= pixelCoord.y + pointRadius; ++y)
+            {
+                if(IsInsideBounds(sf::Vector2i(x,y)))
+                {
+                    inputImage->setPixel(x, y, sf::Color(255, 0, 0,255));
+                }
+            }
+        }
+    }
 }

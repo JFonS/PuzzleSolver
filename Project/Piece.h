@@ -23,8 +23,11 @@ private:
 
     static float RefinedBackgroundThreshold;
     static unsigned char RefinedBackgroundDiscardAlpha;
+    sf::Color refinedBackgroundColor;
 
     vector<Coord> refinedPixelsCoords;
+    vector<Coord> refinedBorderPixels;
+    vector<Coord> cornerPixelCoords;
 
     sf::IntRect bounds; //Bounding box of the piece
     int size; //The number of pixels of the piece
@@ -38,6 +41,10 @@ public:
     Piece();
 
     void RefinePiece(sf::Image *inputImage);
+    void GetPieceCorners(sf::Image *inputImage);
+    bool IsCorner(sf::Image *inputImage, Coord pixelCoord);
+
+    void DrawCorners(sf::Image *inputImage);
 
     void SetBounds(sf::Image *inputImage, const sf::IntRect &bounds)
     {
