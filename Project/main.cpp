@@ -30,8 +30,14 @@ int main(int argc, char* argv[])
     sf::Sprite *sprite = image->GetSprite();
     sf::Sprite *originalSprite = originalImage->GetSprite();
     sprite->setPosition(0,0);
-    originalSprite->setPosition(image->GetWidth(), 0);
+    originalSprite->setPosition(0, 0);
 
+
+    sf::View viewLeft(sf::FloatRect(0, 0, window.getSize().x/2, window.getSize().y));
+    viewLeft.setViewport(sf::FloatRect(0, 0, 0.5, 1));
+    sf::View viewRight(sf::FloatRect(0, 0, window.getSize().x/2, window.getSize().y));
+    viewRight.setViewport(sf::FloatRect(0.5, 0, 0.5, 1));
+    
     bool moving = false;
     while (window.isOpen())
     {
@@ -59,15 +65,23 @@ int main(int argc, char* argv[])
                     originalSprite->move(dx, dy);
                 }
                 lastMouseCoord = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+            } else if (event.type == sf::Event::MouseWheelScrolled) {
+                float zoom = -0.05*float(event.mouseWheelScroll.delta) + 1;
+                cout << event.mouseWheelScroll.delta << ", " << zoom << endl;
+                viewLeft.zoom(zoom);
+                viewRight.zoom(zoom);
             }
         }
         window.clear();
 
+
         //sprite->setScale(float(windowWidth) / (image->GetWidth()), float(windowWidth) / (image->GetWidth()));
         //sprite->setScale(float(windowWidth) / (image->GetWidth() * 2), float(windowHeight) / image->GetHeight());
+        window.setView(viewLeft);
         sprite->setScale(1, 1);
         window.draw(*sprite);
 
+        window.setView(viewRight);
         originalSprite->setScale(1, 1);
         window.draw(*originalSprite);
 
