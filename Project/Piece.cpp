@@ -49,6 +49,9 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
         {
             if(visited[x - bounds.left][y - bounds.top]) continue;
 
+            sf::Color currentColor = maskedImage->getPixel(x - bounds.left, y - bounds.top);
+            if(!Image::EqualColors(backgroundMeanColor, currentColor, RefinedBackgroundThreshold)) continue;
+
             queue<sf::Vector2i> toVisit;
             toVisit.push(sf::Vector2i(x, y));
             while(toVisit.size() > 0)
@@ -56,7 +59,7 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
                 sf::Vector2i current = toVisit.front(); toVisit.pop();
                 visited[current.x - bounds.left][current.y - bounds.top] = true;
 
-                sf::Color currentColor = maskedImage->getPixel(current.x - bounds.left, current.y - bounds.top);
+                currentColor = maskedImage->getPixel(current.x - bounds.left, current.y - bounds.top);
                 if( Image::EqualColors(currentColor, backgroundMeanColor, RefinedBackgroundThreshold) )
                 {
                     sf::Vector2i adj = sf::Vector2i(current.x-1, current.y);
@@ -91,10 +94,10 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
                     maskedImage->setPixel(current.x - bounds.left, current.y - bounds.top, currentColor);
                 }
             }
+            maskedImagePointer = maskedImage;
+            return;
         }
     }
-
-    maskedImagePointer = maskedImage;
 }
 
 
@@ -174,7 +177,7 @@ void Piece::RefinePiece(sf::Image *inputImage) //RefinedBackgroundDiscardAlpha
                     Coord coord; coord.x = current.x + bounds.left; coord.y = current.y + bounds.top;
                     ccCoords.push_back(coord);
 
-                    cout << border << endl;
+                    //cout << border << endl;
                     if (border) {
                         ccBorder.push_back(coord);
                     }

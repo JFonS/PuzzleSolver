@@ -25,25 +25,51 @@ int main(int argc, char* argv[])
 
     image->RefinePieces();
 
+    sf::Vector2i lastMouseCoord(0,0);
+
+    sf::Sprite *sprite = image->GetSprite();
+    sf::Sprite *originalSprite = originalImage->GetSprite();
+    sprite->setPosition(0,0);
+    originalSprite->setPosition(image->GetWidth(), 0);
+
+    bool moving = false;
     while (window.isOpen())
     {
+
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            else if (event.type == sf::Event::MouseButtonPressed)
+            {
+                moving = true;
+            }
+            else if (event.type == sf::Event::MouseButtonReleased)
+            {
+                moving = false;
+            }
+            else if (event.type == sf::Event::MouseMoved)
+            {
+                if (moving)
+                {
+                    float dx = event.mouseMove.x - lastMouseCoord.x;
+                    float dy = event.mouseMove.y - lastMouseCoord.y;
+                    sprite->move(dx,dy);
+                    originalSprite->move(dx, dy);
+                }
+                lastMouseCoord = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+            }
         }
         window.clear();
 
-        sf::Sprite *sprite = image->GetSprite();
         //sprite->setScale(float(windowWidth) / (image->GetWidth()), float(windowWidth) / (image->GetWidth()));
         //sprite->setScale(float(windowWidth) / (image->GetWidth() * 2), float(windowHeight) / image->GetHeight());
+        sprite->setScale(1, 1);
         window.draw(*sprite);
 
-        /*sf::Sprite *originalSprite = originalImage->GetSprite();
-        originalSprite->setScale(float(windowWidth) / (originalImage->GetWidth() * 2), float(windowHeight) / originalImage->GetHeight());
-        originalSprite->setPosition(windowWidth/2, 0);
-        window.draw(*originalSprite);*/
+        originalSprite->setScale(1, 1);
+        window.draw(*originalSprite);
 
         window.display();
     }

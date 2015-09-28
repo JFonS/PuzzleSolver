@@ -99,6 +99,7 @@ void Image::GetPiecesBounds()
 
             //BFS INSIDE THE PIECE
             int pieceSize = 0;
+            vector<sf::Vector2i> piecePixelsCoords;
             int minX, minY, maxX, maxY;
             minX = imageWidth;
             minY = imageHeight;
@@ -106,10 +107,13 @@ void Image::GetPiecesBounds()
 
             queue<sf::Vector2i> toVisit;
             toVisit.push(sf::Vector2i(x,y));
+
             while(toVisit.size() > 0)
             {
                 sf::Vector2i current = toVisit.front(); toVisit.pop();
                 visited[current.x][current.y] = true;
+                piecePixelsCoords.push_back( sf::Vector2i(current.x, current.y) );
+
                 if(!IsDiscarded(image.getPixel(current.x, current.y)))
                 {
                     ++pieceSize;
@@ -177,7 +181,13 @@ void Image::GetPiecesBounds()
             }
             else
             {
-
+                //Discard(make background) all its pixels
+                for(int i = 0; i < piecePixelsCoords.size(); ++i)
+                {
+                    sf::Color currentColor = image.getPixel(piecePixelsCoords[i].x, piecePixelsCoords[i].y);
+                    currentColor.a = DiscardAlpha;
+                    image.setPixel(piecePixelsCoords[i].x, piecePixelsCoords[i].y, currentColor);
+                }
             }
             //
         }
