@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int windowWidth = 1800, windowHeight = 900;
+constexpr int windowWidth = 1800, windowHeight = 900;
 
 int main(int argc, char* argv[])
 {
@@ -32,7 +32,6 @@ int main(int argc, char* argv[])
     sprite->setPosition(0,0);
     originalSprite->setPosition(0, 0);
 
-
     sf::View viewLeft(sf::FloatRect(0, 0, window.getSize().x/2, window.getSize().y));
     viewLeft.setViewport(sf::FloatRect(0, 0, 0.5, 1));
     sf::View viewRight(sf::FloatRect(0, 0, window.getSize().x/2, window.getSize().y));
@@ -41,7 +40,6 @@ int main(int argc, char* argv[])
     bool moving = false;
     while (window.isOpen())
     {
-
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -59,21 +57,20 @@ int main(int argc, char* argv[])
             {
                 if (moving)
                 {
-                    float dx = event.mouseMove.x - lastMouseCoord.x;
-                    float dy = event.mouseMove.y - lastMouseCoord.y;
+                    const float dx = event.mouseMove.x - lastMouseCoord.x;
+                    const float dy = event.mouseMove.y - lastMouseCoord.y;
                     sprite->move(dx,dy);
                     originalSprite->move(dx, dy);
                 }
                 lastMouseCoord = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
             } else if (event.type == sf::Event::MouseWheelScrolled) {
-                float zoom = -0.05*float(event.mouseWheelScroll.delta) + 1;
+                const float zoom = -0.05*float(event.mouseWheelScroll.delta) + 1;
                 cout << event.mouseWheelScroll.delta << ", " << zoom << endl;
                 viewLeft.zoom(zoom);
                 viewRight.zoom(zoom);
             }
         }
         window.clear();
-
 
         //sprite->setScale(float(windowWidth) / (image->GetWidth()), float(windowWidth) / (image->GetWidth()));
         //sprite->setScale(float(windowWidth) / (image->GetWidth() * 2), float(windowHeight) / image->GetHeight());

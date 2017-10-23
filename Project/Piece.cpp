@@ -1,9 +1,9 @@
 #include "Piece.h"
 #include "Image.h"
 
-int Piece::MinSizeToBeAPiece = 5000;
-float Piece::RefinedBackgroundThreshold = 0.15f;
-unsigned char Piece::RefinedBackgroundDiscardAlpha = 1;
+constexpr int Piece::MinSizeToBeAPiece = 5000;
+constexpr float Piece::RefinedBackgroundThreshold = 0.15f;
+constexpr unsigned char Piece::RefinedBackgroundDiscardAlpha = 1;
 
 Piece::Piece()
 {
