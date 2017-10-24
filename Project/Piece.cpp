@@ -40,8 +40,7 @@ void Piece::RefineBackground(sf::Image *inputImage, sf::Image *&maskedImagePoint
     refinedBackgroundColor = sf::Color(refinedBackgroundColorV.x, refinedBackgroundColorV.y, refinedBackgroundColorV.z);
 
     //BFS to discard background's pixels
-    bool visited[bounds.width][bounds.height];
-    for(int x = 0; x < bounds.width; ++x) for(int y = 0; y < bounds.height; ++y) visited[x][y] = false;
+    bool visited[bounds.width][bounds.height] = {false};
 
     for(int x = bounds.left; x < bounds.left + bounds.width; ++x)
     {
@@ -108,8 +107,7 @@ void Piece::RefinePiece(sf::Image *inputImage) //RefinedBackgroundDiscardAlpha
     //BFS to get piece's pixels
     vector<Coord> connectedComponent;
 
-    bool visited[bounds.width][bounds.height];
-    for(int x = 0; x < bounds.width; ++x) for(int y = 0; y < bounds.height; ++y) visited[x][y] = false;
+    bool visited[bounds.width][bounds.height] = {false};
 
     for(int x = 0; x < bounds.width; ++x)
     {
