@@ -18,17 +18,17 @@ int main(int argc, char* argv[])
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Puzzle Solver");
     string inputFilename = argv[1];
 
-    Image *originalImage = new Image(inputFilename, windowWidth, windowHeight);
-    Image *image = new Image(inputFilename, windowWidth, windowHeight);
-    image->DiscardBackground();
-    image->GetPiecesBounds();
+    Image originalImage(inputFilename, windowWidth, windowHeight);
+    Image image(inputFilename, windowWidth, windowHeight);
+    image.DiscardBackground();
+    image.GetPiecesBounds();
 
-    image->RefinePieces();
+    image.RefinePieces();
 
     sf::Vector2i lastMouseCoord(0,0);
 
-    sf::Sprite *sprite = image->GetSprite();
-    sf::Sprite *originalSprite = originalImage->GetSprite();
+    sf::Sprite *sprite = image.GetSprite();
+    sf::Sprite *originalSprite = originalImage.GetSprite();
     sprite->setPosition(0,0);
     originalSprite->setPosition(0, 0);
 
@@ -75,8 +75,8 @@ int main(int argc, char* argv[])
         window.clear();
 
 
-        //sprite->setScale(float(windowWidth) / (image->GetWidth()), float(windowWidth) / (image->GetWidth()));
-        //sprite->setScale(float(windowWidth) / (image->GetWidth() * 2), float(windowHeight) / image->GetHeight());
+        //sprite->setScale(float(windowWidth) / (image.GetWidth()), float(windowWidth) / (image.GetWidth()));
+        //sprite->setScale(float(windowWidth) / (image.GetWidth() * 2), float(windowHeight) / image.GetHeight());
         window.setView(viewLeft);
         sprite->setScale(1, 1);
         window.draw(*sprite);
